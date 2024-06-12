@@ -15,6 +15,11 @@ const shuffleArray = (array: string[]): string[] => {
   return shuffledArray;
 };
 
+const decodeHtmlEntities = (html: string): string => {
+  var txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
 
 type QuestionComponentProps = {
   allQuestions: Question[]; // Assuming allQuestions is an array of Question objects
@@ -61,8 +66,10 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ allQuestions, cur
 
   const seeScore = () => {
     // increment the last question
+    if (selectedAnswer && selectedAnswer !== "") {
       selectedAnswer === currentQuestion.correct_answer ? incrementRightAnswers() : incrementWrongAnswers()
       setQuizDone(true)
+    }
   }
 
   const newGame = () => {
@@ -107,10 +114,10 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ allQuestions, cur
             <div>
                 <h1>Question {currentQuestionIndex+1} out of {allQuestions.length}</h1>
 
-                  <Card>{currentQuestion ? currentQuestion.question :  ""}</Card>;
+                  <Card>{currentQuestion ? decodeHtmlEntities(currentQuestion.question) : ""}</Card>
 
                   {questionOptions && questionOptions.map((option, index) => (
-                      <AnswerCard selectedOrNot={option === selectedAnswer} key={index} onClick={selectAnswer} >{option}</AnswerCard>
+                      <AnswerCard selectedOrNot={option === selectedAnswer} key={index} onClick={selectAnswer} >{decodeHtmlEntities(option)}</AnswerCard>
                   ))}
 
                   {currentQuestionIndex < allQuestions.length-1 ?
