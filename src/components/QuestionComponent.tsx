@@ -78,6 +78,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ allQuestions, cur
       setQuestionOptions([])
       setScore({rightAnswers: 0, wrongAnswers: 0 })
       // go back to home page with quiz settings
+      setCurrentQuestionIndex(0)
       setGameStarted(false)
       setQuestions([])
       setNumberOfQuestions(1)
@@ -117,7 +118,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ allQuestions, cur
                   <Card>{currentQuestion ? decodeHtmlEntities(currentQuestion.question) : ""}</Card>
 
                   {questionOptions && questionOptions.map((option, index) => (
-                      <AnswerCard selectedOrNot={option === selectedAnswer} key={index} onClick={selectAnswer} >{decodeHtmlEntities(option)}</AnswerCard>
+                      <AnswerCard selectedOrNot={decodeHtmlEntities(option) === selectedAnswer} key={index} onClick={selectAnswer} >{decodeHtmlEntities(option)}</AnswerCard>
                   ))}
 
                   {currentQuestionIndex < allQuestions.length-1 ?

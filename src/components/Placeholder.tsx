@@ -4,15 +4,15 @@ import Button from "../componentLibrary/Button";
 import { Question } from "../types";
 import Axios from "axios";
 import QuestionComponent from './QuestionComponent.js';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import '../componentLibrary/General.css';
 
 type Props = {
-  gameStarted: Boolean;
-  gameCategory: String;
+  gameStarted: boolean;
+  gameCategory: string;
   numberOfQuestions: number;
   gameDifficulty: string;
-  gameType: String;
+  gameType: string;
   setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
   setGameCategory: React.Dispatch<React.SetStateAction<string>>;
   setNumberOfQuestions: React.Dispatch<React.SetStateAction<number>>;
@@ -21,10 +21,22 @@ type Props = {
   questions: Question[];
   setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
 };
+type Category = {
+  id: number,
+  name: string,
+}
 
 export default function Placeholder(props: Props) {
   const theme = useTheme();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
+  const [categories, setCategories] = useState<Category []>([])
+
+  useEffect(() => {
+    Axios.get(`https://opentdb.com/api_category.php`)
+      .then((response) => {
+          setCategories(response.data.trivia_categories)
+      })
+  }, [])
 
   const startTheGame = () => {
     // dont start it until all selections are made
@@ -37,8 +49,7 @@ export default function Placeholder(props: Props) {
   }
 
   const fetchQuestions = () => {
-    const CATEGORY = "12";
-    Axios.get(`https://opentdb.com/api.php?amount=${props.numberOfQuestions}&category=${CATEGORY}&difficulty=${props.gameDifficulty}&type=${props.gameType}`)
+    Axios.get(`https://opentdb.com/api.php?amount=${props.numberOfQuestions}&category=${props.gameCategory}&difficulty=${props.gameDifficulty}&type=${props.gameType}`)
       .then((response) => {
         console.log(response.data.results)
         props.setQuestions(response.data.results)
@@ -58,6 +69,14 @@ export default function Placeholder(props: Props) {
     props.setGameDifficulty(event.target.value);
   };
 
+  const handleSetGameCategory = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    props.setGameCategory(event.target.value);
+  };
+
+  const handleSetGameType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    props.setGameType(event.target.value);
+  };
+
   return (
     <Flex
       direction="column"
@@ -72,7 +91,7 @@ export default function Placeholder(props: Props) {
           // set amount of questions
           <div className="form-container">
               <h1 className="header">
-                Instructions: Select your number of questions and difficulty mode, then click "Start Game" to begin playing.
+                Instructions: Select your quiz settings, then click "Start Game" to begin playing.
               </h1>
 
               <label className="styled-label" htmlFor="numberOfQuestions">Number of Questions:</label>
@@ -86,7 +105,7 @@ export default function Placeholder(props: Props) {
                 max="50"
               />
               {/* game difficulty */}
-              <label className="styled-label" htmlFor="gameDifficulty">Game Difficulty:</label>
+              <label className="styled-label" htmlFor="gameDifficulty">Difficulty:</label>
               <select
                 className="styled-select"
                 id="gameDifficulty"
@@ -99,8 +118,30 @@ export default function Placeholder(props: Props) {
               </select>
 
               {/* set quiz type (multiple or true/false) */}
+              <label className="styled-label" htmlFor="gameType">Type:</label>
+              <select
+                className="styled-select"
+                id="gameType"
+                value={props.gameType}
+                onChange={handleSetGameType}
+              >
+                <option value="multiple">Multiple Choice</option>
+                <option value="boolean">True/False</option>
+              </select>
               
               {/* set quiz category (entertainment, sports, etc.) */}
+              <label className="styled-label" htmlFor="gameCategory">Category:</label>
+              <select
+                className="styled-select"
+                id="gameCategory"
+                value={props.gameCategory}
+                onChange={handleSetGameCategory}
+              >
+                {categories && categories.map((category, i) => (
+                  <option key={i} value={category.id}>{category.name}</option>
+                ))}
+                
+              </select>
 
           </div>
       :
