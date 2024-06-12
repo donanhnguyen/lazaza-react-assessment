@@ -3,11 +3,11 @@ import styled from "@emotion/styled";
 
 const _Card = styled(Box)(({ theme }) => ({
   display: "flex",
-  color: theme.textColor,
+  color: 'black',
   alignItems: "center",
   justifyContent: "center",
   borderRadius: theme.borderRadius_3,
-  backgroundColor: theme.cardBackground,
+  backgroundColor: 'white',
   padding: theme.space_lg,
   boxShadow: `${theme.shadowDark}, ${theme.shadowLight}`,
 }));

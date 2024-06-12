@@ -2,7 +2,7 @@ import { Question } from "../types";
 import unreliableAxios from "./unreliableAxios";
 
 const AMOUNT = "5";
-const CATEGORY = "11";
+const CATEGORY = "12";
 const DIFFICULTY = "medium";
 const TYPE = "multiple";
 
